@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EMBETUBE – YouTube Embed Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2em;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #cc0000;
+    }
+    input[type="text"] {
+      width: 60%;
+      padding: 0.5em;
+      font-size: 1em;
+    }
+    button {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      margin-left: 0.5em;
+    }
+    #results {
+      margin-top: 2em;
+    }
+    .video-item {
+      margin-bottom: 2em;
+    }
+    iframe {
+      width: 100%;
+      max-width: 560px;
+      height: 315px;
+      border: none;
+    }
+    textarea {
+      width: 100%;
+      max-width: 560px;
+      height: 100px;
+      margin-top: 0.5em;
+    }
+  </style>
+</head>
+<body>
+  <h1>EMBETUBE – YouTube Embed Generator</h1>
+  <input type="text" id="searchQuery" placeholder="Enter search term">
+  <button onclick="searchVideos()">Search</button>
+  <div id="results"></div>
+
+  <script>
+    const API_KEY = 'AIzaSyDyUs79O5RM_xoeCmwmBwtVX2my8rJHQnw';
+
+    function searchVideos() {
+      const query = document.getElementById('searchQuery').value;
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+
+      fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(query)}&key=${API_KEY}&maxResults=5`)
+        .then(response => response.json())
+        .then(data => {
+          data.items.forEach(item => {
+            const videoId = item.id.videoId;
+            const title = item.snippet.title;
+            const embedCode = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+
+            const videoDiv = document.createElement('div');
+            videoDiv.className = 'video-item';
+            videoDiv.innerHTML = `
+              <h3>${title}</h3>
+              <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+              <p>Embed Code:</p>
+              <textarea readonly>${embedCode}</textarea>
+            `;
+            resultsDiv.appendChild(videoDiv);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching videos:', error);
+          resultsDiv.innerHTML = '<p>Error fetching videos. Please try again later.</p>';
+        });
+    }
+  </script>
+</body>
+</html>
