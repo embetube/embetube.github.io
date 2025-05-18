@@ -34,12 +34,6 @@
       height: 315px;
       border: none;
     }
-    textarea {
-      width: 100%;
-      max-width: 560px;
-      height: 100px;
-      margin-top: 0.5em;
-    }
   </style>
 </head>
 <body>
@@ -60,17 +54,14 @@
         .then(response => response.json())
         .then(data => {
           data.items.forEach(item => {
-            const videoId = item.id.videoId;
             const title = item.snippet.title;
-            const embedCode = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+            const videoId = item.id.videoId;
 
             const videoDiv = document.createElement('div');
             videoDiv.className = 'video-item';
             videoDiv.innerHTML = `
               <h3>${title}</h3>
               <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
-              <p>Embed Code:</p>
-              <textarea readonly>${embedCode}</textarea>
             `;
             resultsDiv.appendChild(videoDiv);
           });
